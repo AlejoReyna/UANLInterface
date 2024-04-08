@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar.tsx';
 import Main from './components/Main.tsx';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Router>
       <Navbar/>
