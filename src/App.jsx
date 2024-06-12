@@ -1,8 +1,8 @@
 import * as React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar.tsx';
-import Main from './components/Main.tsx';
+import Navbar from './components/Navbar.jsx';
+import Main from './components/Main.jsx';
 
 const App = () => {
   return (

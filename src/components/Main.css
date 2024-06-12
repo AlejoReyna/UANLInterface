@@ -1,23 +1,19 @@
-main .container-fluid {
-    background-image: url("img/rectoría.jpg");
-    height: 100vh;
+.uanlLogo {
+    max-width: 100px;
+}
+
+.menu-bar {
+    background-color: rgba(9, 9, 158, 0.5); /* Fondo azul con 50% de transparencia */
+    height:100vh;
+}
+
+
+.menu-item {
+    max-width: 250px !important;
+}
+
+.background {
+    background-image: url("../components/img/rectoria.jpg");
     background-size: cover;
-    background-position: center;
-    padding: 2rem;
-}
-
-.container {
-    border-radius: 5px;
-    background-color: #05396e; 
-    padding: 20px;  
-}
-
-.logo-list li {
-    list-style-type: none;
-    display: flex;
-    justify-content: center;
-}
-
-h4 #select-career {
-    color: white;
+    height: 100vh;
 }
