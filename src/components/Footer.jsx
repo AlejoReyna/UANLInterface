@@ -4,8 +4,15 @@ import './Footer.css';
 const Footer = () => {
     return(
         <footer>
-            <div className="vida-uni-contedor">
-                a
+            <div className="container">
+                <div className='row'>
+                    <div className='col-sm-12'>
+                        <div class='logos'>
+                            
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </footer>
     );

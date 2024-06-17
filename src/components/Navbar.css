@@ -1,38 +1,71 @@
 .navbar .container-fluid {
-    padding: 0;
+    color: white;
 }
 
-.navbar {
-    padding: 0;
+.first-navbar {
+    background: rgba(0,74,143,0.8);
 }
+
+.uanl-logo-container {
+    padding: 0;
+   
+}
+
 .row {
     margin: 0;
 }
+
 .logoExcelencia {
     max-height: 80px;
 }
+
 .left-side {
     margin-left: 0px;
 }
+
 .name {
     font-family: 'Times New Roman', Times, serif;
-    font-size: 20px;
-    width: 500px;
-    margin-left: 20px;
+    font-size: 18px;
 }
 
-.sub-row {
+.second-navbar{
     color: white;
-    background-image: url("./img/rectoria.jpg");
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    background: #bd995c;
 }
 
 .uanlLogo {
-    max-height: 60px;
-    margin-right: 20px;
+    max-height: 50px;
 }
 
 .linea-vertical {
-    border-left: 1px solid #000; /* Línea vertical a la izquierda */
-    height: 60px; /* Altura de la línea */
+    border-left: 1px solid white; /* Línea vertical a la izquierda */
+    height: 50px; /* Altura de la línea */
     margin: 0 auto; /* Centrar horizontalmente */
-  }
+}
+
+@media (min-width: 360px) and (max-width: 520px) {
+    .uanlLogo {
+        max-height: 30px;
+    }
+
+    .linea-vertical {
+        height: 30px; /* Altura de la línea */
+    }
+
+    .name {
+        font-size: 9px;
+    }
+
+    .siase-container {
+        font-size: 10px;
+        
+    }
+
+    
+.logoExcelencia {
+    max-height: 30px;
+}
+}
+

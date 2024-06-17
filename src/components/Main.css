@@ -2,6 +2,15 @@
     max-width: 100px;
 }
 
+.page-title {
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+}
+
+.third-row .col-3 {
+    height: 55px;
+  }
+
 .menu-bar {
     background-color: rgba(9, 9, 158, 0.5); /* Fondo azul con 50% de transparencia */
     height:100vh;
@@ -9,11 +18,59 @@
 
 
 .menu-item {
-    max-width: 250px !important;
+    max-width: 100px !important;
+
+}
+
+.page-container {
+    background-color: rgba(244, 242, 237, 0.838);
+    padding: 2rem;
+    height: 60vh;
+    display: none;
+}
+
+.last-text-container {
+    background: #caa05880; /* Opacidad del 50% */
+    text-align: center;
+}
+
+.barra {
+    background: #bd995c;
+
+    display: block;
+    padding: 4px;
+  }
+.last-text {
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+.siase-btn {
+    border-radius: 3px;
+    width: 7rem;
+}
+.menu-element {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,74,143,0.8);
+    height: 6vh;
 }
 
 .background {
-    background-image: url("../components/img/rectoria.jpg");
+    background-image: url("./img/uanl-bg.png");
     background-size: cover;
-    height: 100vh;
+    height: 90vh;
 }
+
+/* Mostrar .page-container solo cuando selectedService tiene un valor */
+.page-container.show {
+    display: block;
+  }
+
+
+@media (min-width: 360px) and (max-width: 520px) {
+   .background {
+    background-position: center;
+   }
+
+}
+
