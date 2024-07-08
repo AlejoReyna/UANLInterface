@@ -1,0 +1,162 @@
+/* styles.css */
+.background {
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .navbar .container-fluid {
+    color: white;
+}
+
+.first-navbar {
+    background: rgba(0,74,143,0.8);
+    display: flex;
+    justify-content: center;
+}
+
+.uanl-logo-container {
+    padding: 0;
+    display: flex;
+   
+}
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+}
+
+.row {
+    margin: 0;
+}
+
+.logoExcelencia {
+    max-height: 80px;
+}
+
+.left-side {
+    margin-left: 0px;
+}
+
+.name {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 18px;
+}
+
+.second-navbar{
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    background: #bd995c;
+}
+
+.uanlLogo {
+    max-height: 50px;
+}
+
+.linea-vertical {
+    border-left: 1px solid white; /* Línea vertical a la izquierda */
+    height: 50px; /* Altura de la línea */
+    margin: 0 auto; /* Centrar horizontalmente */
+}
+
+@media (min-width: 360px) and (max-width: 520px) {
+    .uanlLogo {
+        max-height: 30px;
+    }
+
+    .linea-vertical {
+        height: 30px; /* Altura de la línea */
+    }
+
+    .name {
+        font-size: 9px;
+    }
+
+    .siase-container {
+        font-size: 10px;
+        
+    }
+
+    
+.logoExcelencia {
+    max-height: 30px;
+}
+}
+
+
+.uanlLogo {
+    max-width: 100px;
+}
+
+.page-title {
+    font-family: 'Times New Roman', Times, serif;
+    color: black;
+}
+
+.third-row .col-3 {
+    height: 55px;
+  }
+
+.menu-bar {
+    background-color: rgba(9, 9, 158, 0.5); /* Fondo azul con 50% de transparencia */
+    height:100vh;
+}
+
+
+.menu-item {
+    max-width: 100px !important;
+
+}
+
+.page-container {
+    background-color: rgba(244, 242, 237, 0.838);
+    padding: 2rem;
+    height: 60vh;
+    display: none;
+}
+
+.last-text-container {
+    background: #caa05880; /* Opacidad del 50% */
+    text-align: center;
+}
+
+.barra {
+    background: #bd995c;
+
+    display: block;
+    padding: 4px;
+  }
+.last-text {
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+.siase-btn {
+    border-radius: 3px;
+    width: 7rem;
+}
+.menu-element {
+    display: flex;
+    justify-content: center;
+    background: rgba(0,74,143,0.8);
+    height: 6vh;
+}
+
+.background {
+    background-image: url("./img/uanl-bg.png");
+    background-size: cover;
+    width: 100%;
+}
+
+/* Mostrar .page-container solo cuando selectedService tiene un valor */
+.page-container.show {
+    display: block;
+  }
+
+
+@media (min-width: 360px) and (max-width: 520px) {
+   .background {
+    background-position: center;
+   }
+
+}
+

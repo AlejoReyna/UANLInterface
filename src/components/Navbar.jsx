@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './Navbar.css';
 import logoExcelencia from './img/logo-excelencia.png';
 import uanlLogo from './img/uanl.png';
@@ -8,10 +8,10 @@ const Navbar = () => {
     
 
     return (
-    <nav className="navbar p-0 ">
+    <nav className="navbar p-0 d-flex ">
         
         {/** First navbar container */}
-        <div className="container-fluid d-flex justify-content-center first-navbar">
+        <div className="container-fluid first-navbar">
            
           <div className='row align-items-center w-100 pt-2 pb-2'>
 

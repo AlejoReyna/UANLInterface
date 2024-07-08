@@ -1,0 +1,31 @@
+{
+    "manifest_version": 3,
+    "name": "My Chrome Extension",
+    "version": "1.0",
+    "description": "A simple Chrome extension",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "web_accessible_resources": [
+  {
+    "resources": ["lib/css/bootstrap.min.css", "lib/js/bootstrap.bundle.min.js", "img/uanl-bg.png", "img/uanlLogo.png", "img/logoExcelencia.png", "img/aniversary.png",
+    "img/siaseImg.png", "img/correoImg.png", "img/codiceImg.png", "img/nexusImg.png", "css/styles.css"],
+    "matches": ["https://deimos.dgi.uanl.mx/*"]
+  }
+],
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["https://deimos.dgi.uanl.mx/*"],
+        "js": [ "content.js"],
+        "type": "module",
+        "css": ["css/styles.css"]
+      }
+    ]
+  }

@@ -2,17 +2,27 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
-import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+window.App = App;
+
+const root = document.createElement('div');
+root.id = 'react-chrome-app';
+document.body.appendChild(root);
+
+ReactDOM.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  root
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Inject custom styles
+const style = document.createElement('style');
+style.textContent = `
+  body {
+    background-color: #f0f0f0;
+  }
+  /* More custom styles */
+`;
+document.head.appendChild(style);
