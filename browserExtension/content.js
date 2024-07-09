@@ -20,7 +20,8 @@ function injectBootstrap() {
         (document.head || document.documentElement).appendChild(script);
     });
 }
- 
+
+
 function createNavbar() {
     const newNavbar = document.createElement('nav');
     newNavbar.className = 'navbar p-0';
@@ -51,12 +52,22 @@ function createNavbar() {
     return newNavbar;
 }
 
+
+const siaseDiv = document.getElementById('siase');
+
 function updateDOM() {
     
-    const siaseDiv = document.getElementById('siase');
-    
+if (siaseDiv) {
+    siaseDiv.style.setProperty('position', 'static', 'important');
+}
 
-    
+
+// Select all <td> elements with bgcolor="#000000" and width="1"
+const targetElements = document.querySelectorAll('td[bgcolor="#000000"][width="1"]');
+
+targetElements.forEach(element => {
+    element.remove();
+});
 
     const correoDiv = document.getElementById('correo');
     if (correoDiv) {
@@ -70,23 +81,49 @@ function updateDOM() {
     }
 
 
-    const tableElements = document.querySelector(
-        'table[width="800"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]'
-    );
-    
-    if (tableElements) {
-        siaseDiv.innerHTML = tableElements.innerHTML;
 
-      
+    
+    
+    const fuckingImg = document.querySelector(
+        'td[colspan="3"]'
+    );
+
+    // This deletes the paragraph with class "titulo"
+const tituloElement = document.querySelector('.titulo');
+
+if (tituloElement) {
+    tituloElement.remove();
+}
+    
+
+
+
+
+    // 
+    // This deletes the services images
+    const fuckingElements = document.querySelector(
+        'td[width="251"]'
+    );
+
+    if(fuckingElements) {
+        fuckingElements.remove();
+    }
+    // 
+    //
+
+    if(fuckingImg){
+        fuckingImg.remove();
     }
 
+    // Ugly table from above 
     const tableInfo = document.querySelector(
         'table[align="center"][class="auto-style1"][style="width: 70%"]'
     );
     if (tableInfo) {
         tableInfo.remove();
     }
-
+    
+    // Ugly header
     const table = document.querySelector('table[width="600"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]');
     if (table) {
         table.remove();
@@ -98,10 +135,13 @@ document.body.insertBefore(newNavbar, document.body.firstChild);
 const newContent = createContent();
 document.body.insertBefore(newContent, document.body.firstChild.nextSibling);
 addEventListeners();
+
+moveTable(); // Mueve y oculta la tabla
 }
+    
+const content = document.createElement('div');
 
 function createContent() {
-    const content = document.createElement('div');
     content.className = 'container-fluid background p-0';
     content.innerHTML = `
         <div class='row third-row w-100 m-0'>
@@ -130,10 +170,8 @@ function createContent() {
        <div class='container page-container'>
             <div id='siase-content' style='display: none;'>
                 <h2 class='text-center page-title'>Seleccione la carrera</h2>
-                <div id='carreras-list'> </div>
-                <div class='d-flex justify-content-center'>
-                    <button class='siase-btn'>Salir</button>
-                </div>
+                <div id='carreras-list'>  </div>
+                
             </div>
 
             <div id='correo-content' style='display: none;'>
@@ -194,13 +232,33 @@ function addEventListeners() {
             handleServiceClick(this.dataset.service);
         });
     });
+
+    // Nuevo código para el event listener de SIASE
+    document.querySelector('[data-service="siase"]').addEventListener('click', function() {
+        document.getElementById('siase-content').style.display = 'block';
+        const fuckingTable = document.querySelector('#carreras-list > table');
+        if (fuckingTable) {
+            fuckingTable.style.display = 'table'; // Muestra la tabla
+        }
+    });
 }
 
-
+// Nueva función para mover la tabla
+function moveTable() {
+    const fuckingTable = document.querySelector(
+        'table[width="800"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]'
+    );
+    if (fuckingTable) {
+        const carrerasList = document.getElementById('carreras-list');
+        carrerasList.appendChild(fuckingTable);
+        fuckingTable.style.display = 'none'; // Oculta la tabla después de moverla
+    }
+}
 
 async function init() {
     await injectBootstrap();
     updateDOM();
+
 }
 
 if (document.readyState === 'loading') {
