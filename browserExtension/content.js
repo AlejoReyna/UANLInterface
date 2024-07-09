@@ -3,7 +3,7 @@ console.log('Content script running');
 document.body.style.backgroundImage = "url('chrome-extension://" + chrome.runtime.id + "/img/uanl-bg.png')";
 document.body.classList.add('background');
 
-function injectBootstrap() {
+async function injectBootstrap() {
     return new Promise((resolve) => {
         const link = document.createElement('link');
         link.href = chrome.runtime.getURL('lib/css/bootstrap.min.css');
@@ -137,6 +137,8 @@ document.body.insertBefore(newContent, document.body.firstChild.nextSibling);
 addEventListeners();
 
 moveTable(); // Mueve y oculta la tabla
+moveNexusForm();
+moveCodiceForm();
 }
     
 const content = document.createElement('div');
@@ -188,9 +190,7 @@ function createContent() {
                 <h4 class='barra page-title'>Codice</h4>
                 <p>Es el Sistema Institucional para la Administración de Bibliotecas donde se encuentran registrados todos los materiales (libros, revistas, CDs, etc.) que existen físicamente en las bibliotecas de nuestra Universidad*, y en este se lleva el control de los préstamos de los materiales y otros procesos propios de las bibliotecas. Para acceder a este servicio y consultar tus préstamos pendientes de devolver, así como las multas pendientes de pagar, puedes hacerlo desde el siguiente botón:</p>
                 <div class='d-flex justify-content-center'>
-                    <form name="frCodice" id="idfrCodice" method="post">
-                    <input type="button" name="btnCodice" id="linkCodice" value="Ingresar">
-                </form>
+
                 </div>
                 <p>* Excepto bibliotecas de administración central: Capilla Alfonsina Biblioteca Universitaria, Biblioteca Universitaria Raúl Rangel Frías y Biblioteca de Ciencias Agropecuarias y Biológicas.</p>
             </div>
@@ -199,9 +199,6 @@ function createContent() {
                 <h4 class='barra page-title'>Nexus</h4>
                 <p>Es una plataforma que facilita la colaboración entre alumnos y maestros en el proceso de enseñanza y aprendizaje, en sus modalidades presencial, a distancia y mixto.</p>
                 <div class='d-flex justify-content-center'>
-                   <form name="frNexus" id="idfrNexus" method="GET" target="_new">
-                        <input type="button" name="btnNexus" id="linkNexus" value="Ingresar">
-                    </form>
                 </div>
             </div>
         </div>
@@ -241,8 +238,48 @@ function addEventListeners() {
             fuckingTable.style.display = 'table'; // Muestra la tabla
         }
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        moveNexusForm();
+        moveCodiceForm();
+    });
 }
 
+function moveCodiceForm() {
+    const codiceForm = document.querySelector('form[name="frCodice"]');
+    if (codiceForm) {
+        const codiceContent = document.getElementById('codice-content');
+        const targetDiv = codiceContent.querySelector('.d-flex.justify-content-center');
+        
+        if (targetDiv) {
+            targetDiv.appendChild(codiceForm);
+            
+            // Opcional: Modificar el estilo del botón para que se ajuste a la nueva ubicación
+            const button = codiceForm.querySelector('input[type="button"]');
+            if (button) {
+                button.className = 'btn btn-primary'; // Añade clases de Bootstrap o tus propias clases personalizadas
+            }
+        }
+    }
+}
+
+function moveNexusForm() {
+    const nexusForm = document.querySelector('form[name="frNexus"]');
+    if (nexusForm) {
+        const nexusContent = document.getElementById('nexus-content');
+        const targetDiv = nexusContent.querySelector('.d-flex.justify-content-center');
+        
+        if (targetDiv) {
+            targetDiv.appendChild(nexusForm);
+            
+            // Optional: Modify the button style to fit the new location
+            const button = nexusForm.querySelector('input[type="button"]');
+            if (button) {
+                button.className = 'btn btn-primary'; // Add Bootstrap classes or your custom classes
+            }
+        }
+    }
+}
 // Nueva función para mover la tabla
 function moveTable() {
     const fuckingTable = document.querySelector(
