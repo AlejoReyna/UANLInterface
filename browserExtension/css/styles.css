@@ -1,8 +1,3 @@
-/* styles.css */
-.background {
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
 
   .navbar .container-fluid {
     color: white;
@@ -109,23 +104,18 @@
 }
 
 .page-container {
-    background-color: rgba(244, 242, 237, 0.838);
+    background-color: white;
     padding: 2rem;
-    height: 60vh;
+    margin-top: 4rem;
     display: none;
 }
 
 .last-text-container {
-    background: #caa05880; /* Opacidad del 50% */
+    background: #bd995c;
     text-align: center;
 }
 
-.barra {
-    background: #bd995c;
 
-    display: block;
-    padding: 4px;
-  }
 .last-text {
     color: white;
     font-family: 'Times New Roman', Times, serif;

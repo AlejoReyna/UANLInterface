@@ -11,7 +11,7 @@
     },
     "web_accessible_resources": [
   {
-    "resources": ["lib/css/bootstrap.min.css", "lib/js/bootstrap.bundle.min.js", "img/uanl-bg.png", "img/uanlLogo.png", "img/logoExcelencia.png", "img/aniversary.png",
+    "resources": ["lib/css/bootstrap.min.css", "lib/js/bootstrap.bundle.min.js", "img/rectoria.webp", "img/uanl-bg.png", "img/uanlLogo.png", "img/logoExcelencia.png", "img/aniversary.png",
     "img/siaseImg.png", "img/correoImg.png", "img/codiceImg.png", "img/nexusImg.png", "css/styles.css"],
     "matches": ["https://deimos.dgi.uanl.mx/*"]
   }
@@ -20,10 +20,14 @@
       "activeTab",
       "storage"
     ],
+    "host_permissions": [
+    "https://deimos.dgi.uanl.mx/*"
+],
     "content_scripts": [
       {
-        "matches": ["https://deimos.dgi.uanl.mx/*"],
-        "js": [ "content.js"],
+        "matches": ["https://deimos.dgi.uanl.mx/*",
+        "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm/*"],
+        "js": [ "content.js" , "siase.js"],
         "type": "module",
         "css": ["css/styles.css"]
       }

@@ -1,7 +1,7 @@
 console.log('Content script running');
 
-document.body.style.backgroundImage = "url('chrome-extension://" + chrome.runtime.id + "/img/uanl-bg.png')";
-document.body.classList.add('background');
+document.body.style.background = "url('chrome-extension://" + chrome.runtime.id + "/img/uanl-bg.png') no-repeat center center fixed";
+document.body.style.backgroundSize = "cover";
 
 async function injectBootstrap() {
     return new Promise((resolve) => {
@@ -28,23 +28,23 @@ function createNavbar() {
     newNavbar.innerHTML = `
        <div class="container-fluid first-navbar">
             <div class='row align-items-center w-100 pt-2 pb-2'>
-                <div class='col uanl-logo-container'>
+                <div class='col d-flex justify-content-start uanl-logo-container'>
                     <img src="${chrome.runtime.getURL('img/uanlLogo.png')}" class='uanlLogo img-fluid' alt="Logo de la Universidad Autónoma de Nuevo León"/>
                     <div class="linea-vertical mx-3"></div>
                     <h1 class="name mt-2"> UNIVERSIDAD AUTÓNOMA DE NUEVO LEÓN </h1>
                 </div>
-                <div class='col nav-item'>
+                <div class='col d-flex justify-content-center'>
                     <img src="${chrome.runtime.getURL('img/aniversary.png')}" class="logoExcelencia img-fluid" alt="Logo from aniversary"/>
                 </div>
-                <div class='col nav-item'>
+                <div class='col d-flex justify-content-end'>
                     <img src="${chrome.runtime.getURL('img/logoExcelencia.png')}" class='logoExcelencia img-fluid' alt="La excelencia por principio, la educación como instrumento"/>
                 </div>
             </div>
         </div>
-        <div class='container-fluid nav-i second-navbar'>
-            <div class='row sub-row'>
+        <div class='container-fluid nav-i second-navbar p-0'>
+            <div class='row sub-row w-100'>
                 <div class='col-12 siase-container'>
-                    <p class=' mt-3 p-0 siase-container'> SISTEMA INTEGRAL PARA LA ADMINISTRACIÓN DE LOS SERVICIOS EDUCATIVOS </p>
+                    <p class='d-flex justify-content-center mt-3 p-0 siase-container'> SISTEMA INTEGRAL PARA LA ADMINISTRACIÓN DE LOS SERVICIOS EDUCATIVOS </p>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@ targetElements.forEach(element => {
 
 
     
-    
+
     const fuckingImg = document.querySelector(
         'td[colspan="3"]'
     );
@@ -287,10 +287,11 @@ function moveTable() {
     );
     if (fuckingTable) {
         const carrerasList = document.getElementById('carreras-list');
+        // Basically this line moves the fknTable into the siase div
         carrerasList.appendChild(fuckingTable);
-        fuckingTable.style.display = 'none'; // Oculta la tabla después de moverla
     }
 }
+
 
 async function init() {
     await injectBootstrap();
