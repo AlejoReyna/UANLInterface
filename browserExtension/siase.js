@@ -1,30 +1,53 @@
-function modifyFrameContent() {
-    // Intenta acceder a los frames
-    const frames = document.getElementsByTagName('frame');
+// Este script se ejecutará cuando la extensión lo inyecte en la página
+const topFrame = document.querySelector('frame[name="top"]');
+if (topFrame) {
+    topFrame.remove();
+}
+
+const frameset = document.querySelector('frameset[cols="184,*"]');
+if (frameset) {
+    frameset.remove();
+
+    // Esperar un momento para asegurarse de que el frameset se haya eliminado
+
+}
+
+const lastframeset = document.querySelector('frameset[rows="110,*"]');
+if (lastframeset) {
+    lastframeset.remove();
+}
+
+console.log('Script inyectado correctamente');
+
+function injectDiv() {
+  // Comprobar si estamos en la página correcta
+  if (window.location.href === "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm") {
+    const newDiv = document.createElement('div');
+    newDiv.id = 'injectedDiv';
+    newDiv.style.position = 'absolute';
+    newDiv.style.top = '';
+    newDiv.style.left = '';
+    newDiv.style.width = '100%';
+    // Modify this elements in the future, as the background doesnt display well and the height may not be appropiated
+    newDiv.style.height = '20vh';
+    newDiv.style.background = `url("${chrome.runtime.getURL('img/uanl-banner.jpg')}") no-repeat center center`;
+newDiv.style.backgroundSize = 'cover';
+    newDiv.style.zIndex = '9999';
+    newDiv.textContent = 'Este es un div inyectado';
     
-    for (let frame of frames) {
-        try {
-            const frameDocument = frame.contentDocument || frame.contentWindow.document;
-            frameDocument.body.style.backgroundColor = "pink";
-
-            const uanlBanner = frameDocument.querySelector('img[src="https://deimos.dgi.uanl.mx/uanlimg/ws/foto2030.jpg"][width="534"][height="82"]');
-            if (uanlBanner) {
-            uanlBanner.remove();
-            console.log('UANL banner image removed from frame:', frame.name);
-            }
-        } catch (e) {
-            console.log('Error accessing frame:', e);
-        }
+    if (document.body) {
+      document.body.appendChild(newDiv);
+    } else {
+      document.documentElement.appendChild(newDiv);
     }
+    console.log('Div inyectado en la página correcta');
+  } else {
+    console.log('No se inyectó el div porque no estamos en la página correcta');
+  }
 }
 
-// Ejecuta la función cuando el documento principal esté listo
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', modifyFrameContent);
+  document.addEventListener('DOMContentLoaded', injectDiv);
 } else {
-    modifyFrameContent();
+  injectDiv();
 }
-
-console.log('DOM content loaded');
-console.log('Document ready state:', document.readyState);
-console.log('Body content:', document.body.innerHTML);
