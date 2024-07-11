@@ -5,6 +5,7 @@ let extractedbarraHeader = null;
 let extractedLeftBar = null;
 
 function extractLeftBar() {
+  
     console.log('Iniciando extractLeftBar()');
     const leftFrame = document.querySelector('frame[name="left"]');
     if (leftFrame) {
@@ -18,6 +19,11 @@ function extractLeftBar() {
             if (leftBar) {
                 extractedLeftBar = leftBar.cloneNode(true);
                 console.log('Menú colapsable extraído correctamente');
+
+                const links = extractedLeftBar.querySelectorAll('a');
+                links.forEach(link => {
+                  link.addEventListener('click', handleLinkClick);
+                });
             } else {
                 console.log('No se encontró ul.menu.collapsible. Buscando alternativas...');
                 
@@ -86,6 +92,17 @@ function extractSiaseData() {
 function injectDiv() {
   if (window.location.href === "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm") {
 
+    const mainContentDiv = document.createElement('div');
+    mainContentDiv.id = 'mainContent';
+    mainContentDiv.style.position = 'fixed';
+    mainContentDiv.style.top = '20vh';
+    mainContentDiv.style.left = '20%';
+    mainContentDiv.style.width = '80%';
+    mainContentDiv.style.height = 'calc(100vh - 20vh)';
+    mainContentDiv.style.overflowY = 'auto';
+    mainContentDiv.style.backgroundColor = '#ffffff';
+    mainContentDiv.style.padding = '20px';
+    mainContentDiv.style.zIndex = '9997';
    
     const newDiv = document.createElement('div');
     newDiv.id = 'injectedDiv';
@@ -161,9 +178,11 @@ function injectDiv() {
     if (document.body) {
       document.body.appendChild(newDiv);
       document.body.appendChild(leftDiv);
+      document.body.appendChild(mainContentDiv);
     } else {
       document.documentElement.appendChild(newDiv);
       document.documentElement.appendChild(leftDiv);
+      document.documentElement.appendChild(mainContentDiv);
     }
     console.log('Div inyectado en la página correcta');
 
@@ -235,6 +254,27 @@ function injectDiv() {
     console.log('No se inyectó el div porque no estamos en la página correcta');
   }
 }
+
+function handleLinkClick(event) {
+    event.preventDefault();
+    const url = event.target.href;
+    loadContent(url);
+  }
+
+  
+  function loadContent(url) {
+    fetch(url)
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const content = doc.body.innerHTML;
+        document.getElementById('mainContent').innerHTML = content;
+      })
+      .catch(error => {
+        console.error('Error al cargar el contenido:', error);
+      });
+  }
 
 function init() {
     console.log('Iniciando extracción de contenido...');
