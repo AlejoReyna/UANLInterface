@@ -2,6 +2,52 @@ console.log('Script inyectado correctamente');
 let extractedSiaseData = null;
 let extractedTd18 = null;
 let extractedbarraHeader = null;
+let extractedLeftBar = null;
+
+function extractLeftBar() {
+    console.log('Iniciando extractLeftBar()');
+    const leftFrame = document.querySelector('frame[name="left"]');
+    if (leftFrame) {
+        console.log('Frame izquierdo encontrado');
+        if (leftFrame.contentDocument) {
+            console.log('Documento del frame accesible');
+            
+            // Intentamos obtener el menú colapsable
+            const leftBar = leftFrame.contentDocument.querySelector('ul.menu.collapsible');
+            
+            if (leftBar) {
+                extractedLeftBar = leftBar.cloneNode(true);
+                console.log('Menú colapsable extraído correctamente');
+            } else {
+                console.log('No se encontró ul.menu.collapsible. Buscando alternativas...');
+                
+                // Buscar cualquier ul dentro del frame
+                const anyUl = leftFrame.contentDocument.querySelector('ul');
+                if (anyUl) {
+                    extractedLeftBar = anyUl.cloneNode(true);
+                    console.log('Se extrajo un ul alternativo');
+                } else {
+                    console.log('No se encontró ningún ul. Extrayendo todo el body.');
+                    const bodyContent = leftFrame.contentDocument.body;
+                    if (bodyContent) {
+                        extractedLeftBar = bodyContent.cloneNode(true);
+                        console.log('Contenido del body extraído como alternativa');
+                    } else {
+                        console.log('No se pudo extraer ni siquiera el body');
+                    }
+                }
+            }
+        } else {
+            console.log('No se puede acceder al contenido del frame izquierdo');
+        }
+    } else {
+        console.log('No se encontró el frame izquierdo');
+    }
+
+    if (!extractedLeftBar) {
+        console.log('No se pudo extraer ningún contenido para leftBar');
+    }
+}
 
 function extractSiaseData() {
   const topFrame = document.querySelector('frame[name="top"]');
@@ -10,13 +56,13 @@ function extractSiaseData() {
     const td18 = topFrame.contentDocument.querySelector('td[width="18%"]');
     const elementsBar = topFrame.contentDocument.querySelector('td[bgcolor="#094988"][colspan="3"]');
     
-
     if (elementsBar) {
         extractedbarraHeader = elementsBar.cloneNode(true);
         console.log('Elemento barraHeader extraído correctamente');
         console.log('Número de enlaces en barraHeader:', extractedbarraHeader.querySelectorAll('a').length);
         console.log('HTML de barraHeader:', extractedbarraHeader.innerHTML);
     }
+    
     if (siaseData) {
       extractedSiaseData = siaseData.cloneNode(true);
       console.log('SIASE data extraída correctamente');
@@ -31,12 +77,7 @@ function extractSiaseData() {
       console.log('No se encontró el elemento td[width="18%"] en el frame top');
     }
 
-    if (elementsBar) {
-        extractedbarraHeader = elementsBar.cloneNode(true);
-        console.log('Elemento barraHeader extraído correctamente');
-      } else {
-        console.log('No se encontró el elemento barraHeader en el frame top');
-      }
+
   } else {
     console.log('No se encontró el frame top o no se puede acceder a su contenido');
   }
@@ -44,6 +85,8 @@ function extractSiaseData() {
 
 function injectDiv() {
   if (window.location.href === "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm") {
+
+   
     const newDiv = document.createElement('div');
     newDiv.id = 'injectedDiv';
     newDiv.style.position = 'absolute';
@@ -72,15 +115,55 @@ function injectDiv() {
 
       <div class="row">
       <div id='barraContent'>
+       
       </div>
       </div>
       
     `;
 
+    const leftDiv = document.createElement('div');
+    leftDiv.style.position = 'fixed';
+    leftDiv.style.top = '20vh';
+    leftDiv.style.left = '0';
+    leftDiv.style.width = '20%';
+    leftDiv.style.height = 'calc(100vh-15vh)';
+    leftDiv.style.overflowY = 'auto';
+    leftDiv.style.backgroundColor = '#f0f0f0';
+    leftDiv.style.padding = '20px';
+    leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+    leftDiv.style.zIndex = '9998';
+    leftDiv.innerHTML = `
+    <div id="leftBar-content">
+     <div class="here"></div>   
+    </div>
+        `;
+    console.log('Intentando insertar leftBar');
+
+        if (extractedLeftBar) {
+            console.log('extractedLeftBar existe, intentando insertarlo');
+            const leftBarContent = document.getElementById('leftBar-content');
+            if (leftBarContent) {
+                const hereDiv = leftBarContent.querySelector('.here');
+                if (hereDiv) {
+                    hereDiv.appendChild(extractedLeftBar);
+                    console.log('Contenido del leftBar insertado correctamente');
+                } else {
+                    leftBarContent.appendChild(extractedLeftBar);
+                    console.log('Contenido insertado directamente en leftBar-content');
+                }
+            } else {
+                console.log('No se encontró el elemento leftBar-content');
+            }
+        } else {
+            console.log('No hay contenido extraído para leftBar');
+        }
+
     if (document.body) {
       document.body.appendChild(newDiv);
+      document.body.appendChild(leftDiv);
     } else {
       document.documentElement.appendChild(newDiv);
+      document.documentElement.appendChild(leftDiv);
     }
     console.log('Div inyectado en la página correcta');
 
@@ -94,6 +177,16 @@ function injectDiv() {
           console.log('SIASE data insertada correctamente');
         }
       }
+    }
+
+    if (extractedLeftBar) {
+        const leftBarContent = document.getElementById('leftBar-content');
+        if (leftBarContent) {
+            leftBarContent.appendChild(extractedLeftBar);
+            console.log('Elemento leftBar insertado correctamente');
+        }
+    } else {
+        console.log('No hay contenido extraído para leftBar');
     }
 
     // Insertar el elemento td[width="18%"] extraído
@@ -144,19 +237,22 @@ function injectDiv() {
 }
 
 function init() {
-  extractSiaseData();
-  
-  // Remover frames después de extraer la información
-  const topFrame = document.querySelector('frame[name="top"]');
-  if (topFrame) topFrame.remove();
-  const frameset = document.querySelector('frameset[cols="184,*"]');
-  if (frameset) frameset.remove();
-  const lastframeset = document.querySelector('frameset[rows="110,*"]');
-  if (lastframeset) lastframeset.remove();
-  
-  injectDiv();
+    console.log('Iniciando extracción de contenido...');
+    extractLeftBar();
+    extractSiaseData();
+    
+    console.log('Removiendo frames...');
+    // Remover frames después de extraer la información
+    const topFrame = document.querySelector('frame[name="top"]');
+    if (topFrame) topFrame.remove();
+    const frameset = document.querySelector('frameset[cols="184,*"]');
+    if (frameset) frameset.remove();
+    const lastframeset = document.querySelector('frameset[rows="110,*"]');
+    if (lastframeset) lastframeset.remove();
+    
+    console.log('Inyectando nuevo contenido...');
+    injectDiv();
 }
-
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
