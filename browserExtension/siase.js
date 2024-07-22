@@ -4,7 +4,9 @@ let extractedTd18 = null;
 let extractedbarraHeader = null;
 let extractedLeftBar = null;
 
-function extractLeftBar() {
+
+
+/** function extractLeftBar() {
   
     console.log('Iniciando extractLeftBar()');
     const leftFrame = document.querySelector('frame[name="left"]');
@@ -54,6 +56,7 @@ function extractLeftBar() {
         console.log('No se pudo extraer ningún contenido para leftBar');
     }
 }
+    **/
 
 function extractSiaseData() {
   const topFrame = document.querySelector('frame[name="top"]');
@@ -92,99 +95,93 @@ function extractSiaseData() {
 function injectDiv() {
   if (window.location.href === "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm") {
 
-    const mainContentDiv = document.createElement('div');
-    mainContentDiv.id = 'mainContent';
-    mainContentDiv.style.position = 'fixed';
-    mainContentDiv.style.top = '20vh';
-    mainContentDiv.style.left = '20%';
-    mainContentDiv.style.width = '80%';
-    mainContentDiv.style.height = 'calc(100vh - 20vh)';
-    mainContentDiv.style.overflowY = 'auto';
-    mainContentDiv.style.backgroundColor = '#ffffff';
-    mainContentDiv.style.padding = '20px';
-    mainContentDiv.style.zIndex = '9997';
+     // Crear un contenedor principal
+     const container = document.createElement('div');
+     container.style.position = 'fixed';
+     container.style.top = '0';
+     container.style.left = '0';
+     container.style.width = '100%';
+     container.style.height = '100vh';
+     container.style.display = 'flex';
+     container.style.zIndex = '9997';
+     container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center center`;
+     container.style.backgroundSize = 'cover';
+ 
+
+     // Modificar leftDiv
+      const leftDiv = document.createElement('div');
+      leftDiv.style.width = '20%';
+      leftDiv.style.height = '100vh';
+      leftDiv.style.overflowY = 'auto';
+      //leftDiv.style.backgroundColor = 'rgba(240, 240, 240, 0.7)';
+      leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
+      leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+      leftDiv.style.zIndex = '9998';
+      leftDiv.style.paddingTop = '15vh'; // Para alinear con el contenido principal
+      leftDiv.innerHTML = `
+      <div id="leftBar-content" style="padding: 20px;">
+        <div class="here"></div>   
+      </div>
+      `;
+    
+      // Modificar mainContentDiv
+      const mainContentDiv = document.createElement('div');
+      mainContentDiv.id = 'mainContent';
+      mainContentDiv.style.width = '80%';
+      mainContentDiv.style.height = '100vh';
+      mainContentDiv.style.overflowY = 'auto';
    
+    // Crear newDiv (banner)
     const newDiv = document.createElement('div');
     newDiv.id = 'injectedDiv';
-    newDiv.style.position = 'absolute';
+    newDiv.style.position = 'sticky';
     newDiv.style.top = '0';
     newDiv.style.left = '0';
     newDiv.style.width = '100%';
     newDiv.style.height = '15vh';
-    newDiv.style.background = `url("${chrome.runtime.getURL('img/uanl-banner.jpg')}") no-repeat center center`;
-    newDiv.style.backgroundSize = 'cover';
+    newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
     newDiv.style.zIndex = '9999';
     newDiv.innerHTML = `
-     <div class="row">
-
+      <div class="row siase-navbar">
         <div class="col-2">
           <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' alt="Logo de la Universidad Autónoma de Nuevo León"/>
         </div>
         <div class="col-10">
           <div id="siaseData-content">
-                <div class='d-flex justify-content-center'>
-                <div id="td18-content">
-                </div>
+            <div class='d-flex justify-content-center'>
+              <div id="td18-content">
+              </div>
             </div>
+          </div>
         </div>
-
       </div>
-
       <div class="row">
-      <div id='barraContent'>
-       
+        <div id='barraContent'>
+        </div>
       </div>
-      </div>
-      
     `;
 
-    const leftDiv = document.createElement('div');
-    leftDiv.style.position = 'fixed';
-    leftDiv.style.top = '20vh';
-    leftDiv.style.left = '0';
-    leftDiv.style.width = '20%';
-    leftDiv.style.height = 'calc(100vh-15vh)';
-    leftDiv.style.overflowY = 'auto';
-    leftDiv.style.backgroundColor = '#f0f0f0';
-    leftDiv.style.padding = '20px';
-    leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-    leftDiv.style.zIndex = '9998';
-    leftDiv.innerHTML = `
-    <div id="leftBar-content">
-     <div class="here"></div>   
-    </div>
-        `;
-    console.log('Intentando insertar leftBar');
+      // Agregar elementos al DOM
+      container.appendChild(leftDiv);
+      container.appendChild(mainContentDiv);
+      mainContentDiv.appendChild(newDiv);
 
-        if (extractedLeftBar) {
-            console.log('extractedLeftBar existe, intentando insertarlo');
-            const leftBarContent = document.getElementById('leftBar-content');
-            if (leftBarContent) {
-                const hereDiv = leftBarContent.querySelector('.here');
-                if (hereDiv) {
-                    hereDiv.appendChild(extractedLeftBar);
-                    console.log('Contenido del leftBar insertado correctamente');
-                } else {
-                    leftBarContent.appendChild(extractedLeftBar);
-                    console.log('Contenido insertado directamente en leftBar-content');
-                }
-            } else {
-                console.log('No se encontró el elemento leftBar-content');
-            }
-        } else {
-            console.log('No hay contenido extraído para leftBar');
-        }
+     // Crear un div para el contenido principal debajo del banner
+     const contentDiv = document.createElement('div');
+     contentDiv.style.padding = '20px';
+     contentDiv.style.marginTop = '15vh';
+     mainContentDiv.appendChild(contentDiv);
 
+      // Añadir el contenedor al body
     if (document.body) {
-      document.body.appendChild(newDiv);
-      document.body.appendChild(leftDiv);
-      document.body.appendChild(mainContentDiv);
+      document.body.appendChild(container);
     } else {
-      document.documentElement.appendChild(newDiv);
-      document.documentElement.appendChild(leftDiv);
-      document.documentElement.appendChild(mainContentDiv);
+      document.documentElement.appendChild(container);
     }
-    console.log('Div inyectado en la página correcta');
+
+    console.log('Estructura inyectada correctamente');
+      
+    
 
     // Insertar los datos de SIASE extraídos
     if (extractedSiaseData) {
@@ -198,7 +195,7 @@ function injectDiv() {
       }
     }
 
-    if (extractedLeftBar) {
+    /** if (extractedLeftBar) {
         const leftBarContent = document.getElementById('leftBar-content');
         if (leftBarContent) {
             leftBarContent.appendChild(extractedLeftBar);
@@ -206,7 +203,7 @@ function injectDiv() {
         }
     } else {
         console.log('No hay contenido extraído para leftBar');
-    }
+    }**/
 
     // Insertar el elemento td[width="18%"] extraído
     if (extractedTd18) {
@@ -278,16 +275,13 @@ function handleLinkClick(event) {
 
 function init() {
     console.log('Iniciando extracción de contenido...');
-    extractLeftBar();
+    //extractLeftBar();
     extractSiaseData();
+    //setBodyBackground();
     
     console.log('Removiendo frames...');
-    // Remover frames después de extraer la información
-    const topFrame = document.querySelector('frame[name="top"]');
-    if (topFrame) topFrame.remove();
-    const frameset = document.querySelector('frameset[cols="184,*"]');
-    if (frameset) frameset.remove();
-    const lastframeset = document.querySelector('frameset[rows="110,*"]');
+
+  const lastframeset = document.querySelector('frameset[rows="110,*"]');
     if (lastframeset) lastframeset.remove();
     
     console.log('Inyectando nuevo contenido...');

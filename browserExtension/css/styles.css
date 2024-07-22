@@ -3,6 +3,9 @@
     color: white;
 }
 
+.siase-navbar {
+    background-color:rgba(2, 35, 66, 0.8) !important;
+}
 .first-navbar {
     background: rgba(0,74,143,0.8);
     display: flex;
@@ -37,6 +40,9 @@
     font-size: 18px;
 }
 
+#barraContent {
+    background-color: #bd995c !important;
+}
 .second-navbar{
     color: white;
     font-family: 'Times New Roman', Times, serif;
@@ -47,6 +53,7 @@
 .uanlLogo {
     max-height: 50px;
 }
+
 
 .linea-vertical {
     border-left: 1px solid white; /* Línea vertical a la izquierda */
