@@ -137,77 +137,6 @@ function createMainContentDiv() {
   return mainContentDiv;
 }
 
-function createLeftDiv() {
-  const leftDiv = document.createElement('div');
-  leftDiv.style.width = '20%';
-  leftDiv.style.height = '100%';
-  leftDiv.style.overflowY = 'auto';
-  leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
-  leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-  leftDiv.style.zIndex = '9998';
-  leftDiv.innerHTML = `
-      <div id="leftBar-content" style="padding: 20px;">
-          <div class="here"></div>
-      </div>
-      <iframe id="leftFrame" name="left"
-              style="width: 100%;
-              height: calc(100% - 20px);
-              border: none;">
-              </iframe>
-  `;
-
-   // Modificar el contenido del iframe una vez que se cargue
-   const iframe = leftDiv.querySelector('#leftFrame');
-   iframe.onload = function() {
-       try {
-           const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-           const iframeBody = iframeDocument.body;
-           const iframeAnchors = iframeDocument.getElementsByTagName('a');
-
-           if (iframeAnchors.length > 0) {
-            // Crear un estilo para sobrescribir el fondo de los enlaces
-            const style = iframeDocument.createElement('style');
-            style.textContent = `
-                a {
-                    background: none !important;
-                    background-color: transparent !important;
-                }
-            `;
-            iframeDocument.head.appendChild(style);
-        
-            // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
-            Array.from(iframeAnchors).forEach(anchor => {
-                anchor.removeAttribute('background');
-                anchor.style.removeProperty('background');
-                anchor.style.removeProperty('background-color');
-            });
-        
-            console.log('Fondo de los enlaces eliminado correctamente');
-        } else {
-            console.log('No se encontraron enlaces en el iframe');
-        }
-        
-           
-           
-           if (iframeBody) {
-               // Eliminar el atributo bgcolor si existe
-               iframeBody.removeAttribute('bgcolor');
-               
-               // Crear y añadir un estilo para asegurar que el fondo se aplique
-               const style = iframeDocument.createElement('style');
-               iframeDocument.head.appendChild(style);
-               
-           } 
-        } catch (error) {
-            console.error('Error al acceder al contenido del iframe:', error);
-        }
-   };
-
-
-
-  return leftDiv;
-}
-
 function createBanner() {
   const newDiv = document.createElement('div');
   newDiv.id = 'injectedDiv';
@@ -331,6 +260,100 @@ function createStyledLink(link) {
     newLink.onclick = handleLinkClick;
     return newLink;
 }
+
+function createLeftDiv() {
+    const leftDiv = document.createElement('div');
+    leftDiv.style.width = '20%';
+    leftDiv.style.height = '100%';
+    leftDiv.style.overflowY = 'auto';
+    leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
+    leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+    leftDiv.style.zIndex = '9998';
+    leftDiv.innerHTML = `
+        <div id="leftBar-content" style="padding: 20px;">
+            <div class="here"></div>
+        </div>
+        <iframe id="leftFrame" name="left"
+                style="width: 100%;
+                height: calc(100% - 20px);
+                border: none;">
+                </iframe>
+    `;
+  
+     // Modificar el contenido del iframe una vez que se cargue
+     const iframe = leftDiv.querySelector('#leftFrame');
+     iframe.onload = function() {
+         try {
+             const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+             const iframeBody = iframeDocument.body;
+             const iframeAnchors = iframeDocument.getElementsByTagName('a');
+             const iframeLi = iframeDocument.getElementsByTagName('li');
+            
+             if (iframeLi.length > 0) {
+                // Crear un estilo para sobrescribir el fondo de los enlaces
+                const style = iframeDocument.createElement('style');
+                style.textContent = `
+                li {
+                    border-bottom: none !important;
+                }
+            `;
+                iframeDocument.head.appendChild(style);
+            
+                // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
+                Array.from(iframeLi).forEach(li => {
+                    li.style.removeProperty('border-bottom')
+                });
+            
+                console.log('Border bottom eliminado correctamente');
+            } else {
+                console.log('No se encontraron elementos li en el iframe');
+            }
+  
+             if (iframeAnchors.length > 0) {
+              // Crear un estilo para sobrescribir el fondo de los enlaces
+              const style = iframeDocument.createElement('style');
+              style.textContent = `
+                  a {
+                      background: none !important;
+                      background-color: transparent !important;
+                  }
+              `;
+              iframeDocument.head.appendChild(style);
+          
+              // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
+              Array.from(iframeAnchors).forEach(anchor => {
+                  anchor.removeAttribute('background');
+                  anchor.style.removeProperty('background');
+                  anchor.style.removeProperty('background-color');
+              });
+          
+              console.log('Fondo de los enlaces eliminado correctamente');
+          } else {
+              console.log('No se encontraron enlaces en el iframe');
+          }
+          
+             
+             
+             if (iframeBody) {
+                 // Eliminar el atributo bgcolor si existe
+                 iframeBody.removeAttribute('bgcolor');
+                 
+                 // Crear y añadir un estilo para asegurar que el fondo se aplique
+                 const style = iframeDocument.createElement('style');
+                 iframeDocument.head.appendChild(style);
+                 iframeBody.style.padding = '5px 10px';
+                 
+             } 
+          } catch (error) {
+              console.error('Error al acceder al contenido del iframe:', error);
+          }
+     };
+  
+  
+  
+    return leftDiv;
+  }
+  
 
 
 
