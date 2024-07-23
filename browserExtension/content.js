@@ -1,7 +1,13 @@
+// Constantes y variables globales
+const content = document.createElement('div');
+
+// Funciones de inicialización y configuración
 console.log('Content script running');
 
-document.body.style.background = "url('chrome-extension://" + chrome.runtime.id + "/img/uanl-bg.png') no-repeat center center fixed";
-document.body.style.backgroundSize = "cover";
+async function init() {
+    await injectBootstrap();
+    updateDOM();
+}
 
 async function injectBootstrap() {
     return new Promise((resolve) => {
@@ -21,6 +27,49 @@ async function injectBootstrap() {
     });
 }
 
+function updateDOM() {
+    setBackgroundImage();
+    removeUnwantedElements();
+    const newNavbar = createNavbar();
+    document.body.insertBefore(newNavbar, document.body.firstChild);
+
+    const newContent = createContent();
+    document.body.insertBefore(newContent, document.body.firstChild.nextSibling);
+    addEventListeners();
+
+    moveTable();
+    moveNexusForm();
+    moveCodiceForm();
+}
+
+// Funciones de manipulación del DOM
+function setBackgroundImage() {
+    document.body.style.background = `url('chrome-extension://${chrome.runtime.id}/img/uanl-bg.png') no-repeat center center fixed`;
+    document.body.style.backgroundSize = "cover";
+}
+
+function removeUnwantedElements() {
+    const elementsToRemove = [
+        'td[bgcolor="#000000"][width="1"]',
+        '#correo',
+        '#bloqueo',
+        'td[colspan="3"]',
+        '.titulo',
+        'td[width="251"]',
+        'table[align="center"][class="auto-style1"][style="width: 70%"]',
+        'table[width="600"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]'
+    ];
+
+    elementsToRemove.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => element.remove());
+    });
+
+    const siaseDiv = document.getElementById('siase');
+    if (siaseDiv) {
+        siaseDiv.style.setProperty('position', 'static', 'important');
+    }
+}
 
 function createNavbar() {
     const newNavbar = document.createElement('nav');
@@ -51,97 +100,6 @@ function createNavbar() {
     `;
     return newNavbar;
 }
-
-
-const siaseDiv = document.getElementById('siase');
-
-function updateDOM() {
-    
-if (siaseDiv) {
-    siaseDiv.style.setProperty('position', 'static', 'important');
-}
-
-
-// Select all <td> elements with bgcolor="#000000" and width="1"
-const targetElements = document.querySelectorAll('td[bgcolor="#000000"][width="1"]');
-
-targetElements.forEach(element => {
-    element.remove();
-});
-
-    const correoDiv = document.getElementById('correo');
-    if (correoDiv) {
-        correoDiv.style.display = 'none';
-
-    }
-
-    const bloqueoDiv = document.getElementById('bloqueo');
-    if (bloqueoDiv) {
-        bloqueoDiv.style.display = 'none';
-    }
-
-
-
-    
-
-    const fuckingImg = document.querySelector(
-        'td[colspan="3"]'
-    );
-
-    // This deletes the paragraph with class "titulo"
-const tituloElement = document.querySelector('.titulo');
-
-if (tituloElement) {
-    tituloElement.remove();
-}
-    
-
-
-
-
-    // 
-    // This deletes the services images
-    const fuckingElements = document.querySelector(
-        'td[width="251"]'
-    );
-
-    if(fuckingElements) {
-        fuckingElements.remove();
-    }
-    // 
-    //
-
-    if(fuckingImg){
-        fuckingImg.remove();
-    }
-
-    // Ugly table from above 
-    const tableInfo = document.querySelector(
-        'table[align="center"][class="auto-style1"][style="width: 70%"]'
-    );
-    if (tableInfo) {
-        tableInfo.remove();
-    }
-    
-    // Ugly header
-    const table = document.querySelector('table[width="600"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]');
-    if (table) {
-        table.remove();
-    }
-    
-const newNavbar = createNavbar();
-document.body.insertBefore(newNavbar, document.body.firstChild);
-
-const newContent = createContent();
-document.body.insertBefore(newContent, document.body.firstChild.nextSibling);
-addEventListeners();
-
-moveTable(); // Mueve y oculta la tabla
-moveNexusForm();
-moveCodiceForm();
-}
-    
-const content = document.createElement('div');
 
 function createContent() {
     content.className = 'container-fluid background p-0';
@@ -211,10 +169,53 @@ function createContent() {
             </div>
         </div>
     `;
-
     return content;
 }
 
+function moveTable() {
+    const fuckingTable = document.querySelector(
+        'table[width="800"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]'
+    );
+    if (fuckingTable) {
+        const carrerasList = document.getElementById('carreras-list');
+        carrerasList.appendChild(fuckingTable);
+    }
+}
+
+function moveNexusForm() {
+    const nexusForm = document.querySelector('form[name="frNexus"]');
+    if (nexusForm) {
+        const nexusContent = document.getElementById('nexus-content');
+        const targetDiv = nexusContent.querySelector('.d-flex.justify-content-center');
+        
+        if (targetDiv) {
+            targetDiv.appendChild(nexusForm);
+            styleButton(nexusForm);
+        }
+    }
+}
+
+function moveCodiceForm() {
+    const codiceForm = document.querySelector('form[name="frCodice"]');
+    if (codiceForm) {
+        const codiceContent = document.getElementById('codice-content');
+        const targetDiv = codiceContent.querySelector('.d-flex.justify-content-center');
+        
+        if (targetDiv) {
+            targetDiv.appendChild(codiceForm);
+            styleButton(codiceForm);
+        }
+    }
+}
+
+function styleButton(form) {
+    const button = form.querySelector('input[type="button"]');
+    if (button) {
+        button.className = 'btn btn-primary';
+    }
+}
+
+// Manejadores de eventos
 function handleServiceClick(service) {
     document.querySelectorAll('.page-container > div').forEach(div => {
         div.style.display = 'none';
@@ -230,12 +231,11 @@ function addEventListeners() {
         });
     });
 
-    // Nuevo código para el event listener de SIASE
     document.querySelector('[data-service="siase"]').addEventListener('click', function() {
         document.getElementById('siase-content').style.display = 'block';
         const fuckingTable = document.querySelector('#carreras-list > table');
         if (fuckingTable) {
-            fuckingTable.style.display = 'table'; // Muestra la tabla
+            fuckingTable.style.display = 'table';
         }
     });
 
@@ -245,60 +245,7 @@ function addEventListeners() {
     });
 }
 
-function moveCodiceForm() {
-    const codiceForm = document.querySelector('form[name="frCodice"]');
-    if (codiceForm) {
-        const codiceContent = document.getElementById('codice-content');
-        const targetDiv = codiceContent.querySelector('.d-flex.justify-content-center');
-        
-        if (targetDiv) {
-            targetDiv.appendChild(codiceForm);
-            
-            // Opcional: Modificar el estilo del botón para que se ajuste a la nueva ubicación
-            const button = codiceForm.querySelector('input[type="button"]');
-            if (button) {
-                button.className = 'btn btn-primary'; // Añade clases de Bootstrap o tus propias clases personalizadas
-            }
-        }
-    }
-}
-
-function moveNexusForm() {
-    const nexusForm = document.querySelector('form[name="frNexus"]');
-    if (nexusForm) {
-        const nexusContent = document.getElementById('nexus-content');
-        const targetDiv = nexusContent.querySelector('.d-flex.justify-content-center');
-        
-        if (targetDiv) {
-            targetDiv.appendChild(nexusForm);
-            
-            // Optional: Modify the button style to fit the new location
-            const button = nexusForm.querySelector('input[type="button"]');
-            if (button) {
-                button.className = 'btn btn-primary'; // Add Bootstrap classes or your custom classes
-            }
-        }
-    }
-}
-// Nueva función para mover la tabla
-function moveTable() {
-    const fuckingTable = document.querySelector(
-        'table[width="800"][border="0"][cellspacing="0"][cellpadding="0"][align="center"]'
-    );
-    if (fuckingTable) {
-        const carrerasList = document.getElementById('carreras-list');
-        // Basically this line moves the fknTable into the siase div
-        carrerasList.appendChild(fuckingTable);
-    }
-}
-
-
-async function init() {
-    await injectBootstrap();
-    updateDOM();
-
-}
-
+// Inicialización
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
