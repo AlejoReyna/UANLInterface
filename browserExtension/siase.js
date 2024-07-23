@@ -120,23 +120,6 @@ function createMainContainer() {
   return container;
 }
 
-function createLeftDiv() {
-  const leftDiv = document.createElement('div');
-  leftDiv.style.width = '20%';
-  leftDiv.style.height = '100%';
-  leftDiv.style.overflowY = 'auto';
-  leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
-  leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-  leftDiv.style.zIndex = '9998';
-  leftDiv.innerHTML = `
-      <div id="leftBar-content" style="padding: 20px;">
-          <div class="here"></div>
-      </div>
-      <iframe id="leftFrame" name="left" style="width: 100%; height: calc(100% - 20px); border: none;"></iframe>
-  `;
-  return leftDiv;
-}
-
 function createMainContentDiv() {
   const mainContentDiv = document.createElement('div');
   mainContentDiv.id = 'mainContent';
@@ -153,6 +136,78 @@ function createMainContentDiv() {
   `;
   return mainContentDiv;
 }
+
+function createLeftDiv() {
+  const leftDiv = document.createElement('div');
+  leftDiv.style.width = '20%';
+  leftDiv.style.height = '100%';
+  leftDiv.style.overflowY = 'auto';
+  leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
+  leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+  leftDiv.style.zIndex = '9998';
+  leftDiv.innerHTML = `
+      <div id="leftBar-content" style="padding: 20px;">
+          <div class="here"></div>
+      </div>
+      <iframe id="leftFrame" name="left"
+              style="width: 100%;
+              height: calc(100% - 20px);
+              border: none;">
+              </iframe>
+  `;
+
+   // Modificar el contenido del iframe una vez que se cargue
+   const iframe = leftDiv.querySelector('#leftFrame');
+   iframe.onload = function() {
+       try {
+           const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+           const iframeBody = iframeDocument.body;
+           const iframeAnchors = iframeDocument.getElementsByTagName('a');
+
+           if (iframeAnchors.length > 0) {
+            // Crear un estilo para sobrescribir el fondo de los enlaces
+            const style = iframeDocument.createElement('style');
+            style.textContent = `
+                a {
+                    background: none !important;
+                    background-color: transparent !important;
+                }
+            `;
+            iframeDocument.head.appendChild(style);
+        
+            // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
+            Array.from(iframeAnchors).forEach(anchor => {
+                anchor.removeAttribute('background');
+                anchor.style.removeProperty('background');
+                anchor.style.removeProperty('background-color');
+            });
+        
+            console.log('Fondo de los enlaces eliminado correctamente');
+        } else {
+            console.log('No se encontraron enlaces en el iframe');
+        }
+        
+           
+           
+           if (iframeBody) {
+               // Eliminar el atributo bgcolor si existe
+               iframeBody.removeAttribute('bgcolor');
+               
+               // Crear y añadir un estilo para asegurar que el fondo se aplique
+               const style = iframeDocument.createElement('style');
+               iframeDocument.head.appendChild(style);
+               
+           } 
+        } catch (error) {
+            console.error('Error al acceder al contenido del iframe:', error);
+        }
+   };
+
+
+
+  return leftDiv;
+}
+
 function createBanner() {
   const newDiv = document.createElement('div');
   newDiv.id = 'injectedDiv';
@@ -242,6 +297,7 @@ function insertTd18() {
     }
 }
 
+// Function that sets the vertical menubar in the sidebar
 function insertBarraHeader() {
     if (extractedbarraHeader) {
         const barraContent = document.getElementById('barraContent');
@@ -264,7 +320,7 @@ function insertBarraHeader() {
     }
 }
 
-
+// Function that modifies the menu opened while clicking in a sidebar
 function createStyledLink(link) {
     const newLink = link.cloneNode(true);
     newLink.style.color = 'white';
@@ -276,8 +332,14 @@ function createStyledLink(link) {
     return newLink;
 }
 
-function styleBarraContent(barraContent) {
-    barraContent.style.backgroundColor = '#094988';
+
+
+
+/** 
+ *  Unused function
+ 
+    function styleBarraContent(barraContent) {
+    barraContent.style.backgroundColor = 'red';
     barraContent.style.width = '100%';
     barraContent.style.minHeight = '40px';
     barraContent.style.display = 'flex';
@@ -285,6 +347,8 @@ function styleBarraContent(barraContent) {
     barraContent.style.justifyContent = 'space-around';
     barraContent.style.overflow = 'visible';
 }
+
+**/
 
 // Event Handlers
 function handleLinkClick(event) {

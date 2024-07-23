@@ -1,7 +1,6 @@
-// Constantes y variables globales
 const content = document.createElement('div');
 
-// Funciones de inicialización y configuración
+// Initialization and configuration functions
 console.log('Content script running');
 
 async function init() {
@@ -215,7 +214,7 @@ function styleButton(form) {
     }
 }
 
-// Manejadores de eventos
+// Event handlers
 function handleServiceClick(service) {
     document.querySelectorAll('.page-container > div').forEach(div => {
         div.style.display = 'none';
