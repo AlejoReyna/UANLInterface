@@ -107,87 +107,88 @@ function injectDiv() {
 }
 
 function createMainContainer() {
-    const container = document.createElement('div');
-    container.style.position = 'fixed';
-    container.style.top = '0';
-    container.style.left = '0';
-    container.style.width = '100%';
-    container.style.height = '100vh';
-    container.style.display = 'flex';
-    container.style.zIndex = '9997';
-    container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center`;
-    container.style.backgroundSize = 'cover';
-    return container;
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.top = '0';
+  container.style.left = '0';
+  container.style.width = '100%';
+  container.style.height = '100vh';
+  container.style.display = 'flex';
+  container.style.zIndex = '9997';
+  container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center`;
+  container.style.backgroundSize = 'cover';
+  return container;
 }
 
 function createLeftDiv() {
-    const leftDiv = document.createElement('div');
-    leftDiv.style.width = '20%';
-    leftDiv.style.height = '100vh';
-    leftDiv.style.overflowY = 'auto';
-    leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
-    leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-    leftDiv.style.zIndex = '9998';
-    leftDiv.style.paddingTop = '15vh';
-    leftDiv.innerHTML = `
-        <div id="leftBar-content" style="padding: 20px;">
-            <div class="here"></div>
-        </div>
-        <iframe id="leftFrame" name="left" style="width: 100%; height: calc(100% - 20px); border: none;"></iframe>
-    `;
-    return leftDiv;
+  const leftDiv = document.createElement('div');
+  leftDiv.style.width = '20%';
+  leftDiv.style.height = '100%';
+  leftDiv.style.overflowY = 'auto';
+  leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
+  leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+  leftDiv.style.zIndex = '9998';
+  leftDiv.innerHTML = `
+      <div id="leftBar-content" style="padding: 20px;">
+          <div class="here"></div>
+      </div>
+      <iframe id="leftFrame" name="left" style="width: 100%; height: calc(100% - 20px); border: none;"></iframe>
+  `;
+  return leftDiv;
 }
 
 function createMainContentDiv() {
-    const mainContentDiv = document.createElement('div');
-    mainContentDiv.id = 'mainContent';
-    mainContentDiv.style.width = '80%';
-    mainContentDiv.style.height = '100vh';
-    mainContentDiv.style.overflowY = 'auto';
-    mainContentDiv.innerHTML = `
-        <div id="mainBanner"></div>
-        <div id="originalMainContent"></div>
-        <iframe id="centerFrame" name="center" style=" width: 100%; height: calc(100% - 15vh); border: none;"></iframe>
-    `;
-    return mainContentDiv;
+  const mainContentDiv = document.createElement('div');
+  mainContentDiv.id = 'mainContent';
+  mainContentDiv.style.width = '80%';
+  mainContentDiv.style.height = '100vh';
+  mainContentDiv.style.display = 'flex';
+  mainContentDiv.style.flexDirection = 'column';
+  mainContentDiv.innerHTML = `
+      <div id="mainBanner" style="flex-shrink: 0;"></div>
+      <div style="flex-grow: 1; overflow-y: auto;">
+          <div id="originalMainContent"></div>
+          <iframe id="centerFrame" name="center" style="width: 100%; height: 100%; border: none;"></iframe>
+      </div>
+  `;
+  return mainContentDiv;
 }
-
 function createBanner() {
-    const newDiv = document.createElement('div');
-    newDiv.id = 'injectedDiv';
-    newDiv.style.position = 'sticky';
-    newDiv.style.top = '0';
-    newDiv.style.left = '0';
-    newDiv.style.width = '100%';
-    newDiv.style.height = '15vh';
-    newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-    newDiv.style.zIndex = '9999';
-    newDiv.innerHTML = `
-        <div class="row siase-navbar">
-            <div class="col-2">
-                <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' alt="Logo de la Universidad Autónoma de Nuevo León"/>
-            </div>
-            <div class="col-10">
-                <div id="siaseData-content">
-                    <div class='d-flex justify-content-center'>
-                        <div id="td18-content">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id='barraContent'>
-            </div>
-        </div>
-    `;
-    return newDiv;
+  const newDiv = document.createElement('div');
+  newDiv.id = 'injectedDiv';
+  newDiv.style.display = 'none';
+  newDiv.style.width = '100%';
+  newDiv.style.height = '15vh';
+  newDiv.style.minHeight = '100px';
+  newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+  newDiv.style.zIndex = '9999';
+  newDiv.style.position = 'sticky';
+  newDiv.style.top = '0';
+  newDiv.innerHTML = `
+      <div class="row siase-navbar">
+          <div class="col-2">
+              <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' alt="Logo de la Universidad Autónoma de Nuevo León"/>
+          </div>
+          <div class="col-10">
+              <div id="siaseData-content">
+                  <div class='d-flex justify-content-center'>
+                      <div id="td18-content">
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="row">
+          <div id='barraContent'>
+          </div>
+      </div>
+  `;
+  return newDiv;
 }
 
 function createContentDiv() {
     const contentDiv = document.createElement('div');
-    contentDiv.style.padding = '20px';
-    contentDiv.style.marginTop = '15vh';
+  
     return contentDiv;
 }
 
