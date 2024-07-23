@@ -115,7 +115,7 @@ function createMainContainer() {
     container.style.height = '100vh';
     container.style.display = 'flex';
     container.style.zIndex = '9997';
-    container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center center`;
+    container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center`;
     container.style.backgroundSize = 'cover';
     return container;
 }
@@ -147,8 +147,7 @@ function createMainContentDiv() {
     mainContentDiv.innerHTML = `
         <div id="mainBanner"></div>
         <div id="originalMainContent"></div>
-        <div id="newMainContent" style="display: none;"></div>
-        <iframe id="centerFrame" name="center" style="display: none; width: 100%; height: calc(100% - 15vh); border: none;"></iframe>
+        <iframe id="centerFrame" name="center" style=" width: 100%; height: calc(100% - 15vh); border: none;"></iframe>
     `;
     return mainContentDiv;
 }
@@ -263,6 +262,7 @@ function insertBarraHeader() {
         console.log('No hay contenido extraído para barraHeader');
     }
 }
+
 
 function createStyledLink(link) {
     const newLink = link.cloneNode(true);
