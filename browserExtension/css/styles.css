@@ -40,9 +40,9 @@
     font-size: 18px;
 }
 
-#barraContent {
+/** #barraContent {
     background-color: #bd995c !important;
-}
+} **/
 .second-navbar{
     color: white;
     font-family: 'Times New Roman', Times, serif;

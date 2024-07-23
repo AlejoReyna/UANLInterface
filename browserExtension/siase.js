@@ -6,7 +6,7 @@ let extractedLeftBar = null;
 
 
 
-/** function extractLeftBar() {
+function extractLeftBar() {
   
     console.log('Iniciando extractLeftBar()');
     const leftFrame = document.querySelector('frame[name="left"]');
@@ -56,7 +56,7 @@ let extractedLeftBar = null;
         console.log('No se pudo extraer ningún contenido para leftBar');
     }
 }
-    **/
+  
 
 function extractSiaseData() {
   const topFrame = document.querySelector('frame[name="top"]');
@@ -108,22 +108,23 @@ function injectDiv() {
      container.style.backgroundSize = 'cover';
  
 
-     // Modificar leftDiv
-      const leftDiv = document.createElement('div');
-      leftDiv.style.width = '20%';
-      leftDiv.style.height = '100vh';
-      leftDiv.style.overflowY = 'auto';
-      //leftDiv.style.backgroundColor = 'rgba(240, 240, 240, 0.7)';
-      leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
-      leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-      leftDiv.style.zIndex = '9998';
-      leftDiv.style.paddingTop = '15vh'; // Para alinear con el contenido principal
-      leftDiv.innerHTML = `
-      <div id="leftBar-content" style="padding: 20px;">
-        <div class="here"></div>   
-      </div>
-      `;
-    
+     const leftDiv = document.createElement('div');
+leftDiv.style.width = '20%';
+leftDiv.style.height = '100vh';
+leftDiv.style.overflowY = 'auto';
+leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
+leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
+leftDiv.style.zIndex = '9998';
+leftDiv.style.paddingTop = '15vh';
+leftDiv.innerHTML = `
+  <div id="leftBar-content" style="padding: 20px;">
+    <div class="here"></div>
+  </div>
+  <iframe id="leftFrame" name="left" style="width: 100%; height: calc(100% - 20px); border: none;"></iframe>
+`;
+      const insertionPoint = leftDiv.querySelector('.here');
+
+
       // Modificar mainContentDiv
       const mainContentDiv = document.createElement('div');
       mainContentDiv.id = 'mainContent';
@@ -195,7 +196,7 @@ function injectDiv() {
       }
     }
 
-    /** if (extractedLeftBar) {
+  if (extractedLeftBar) {
         const leftBarContent = document.getElementById('leftBar-content');
         if (leftBarContent) {
             leftBarContent.appendChild(extractedLeftBar);
@@ -203,7 +204,7 @@ function injectDiv() {
         }
     } else {
         console.log('No hay contenido extraído para leftBar');
-    }**/
+    }
 
     // Insertar el elemento td[width="18%"] extraído
     if (extractedTd18) {
@@ -219,15 +220,27 @@ function injectDiv() {
         if (barraContent) {
             barraContent.innerHTML = ''; // Limpiamos el contenido existente
             const links = extractedbarraHeader.querySelectorAll('a');
-            links.forEach((link, index) => {
-                const newLink = link.cloneNode(true);
-                newLink.style.color = 'white';
-                newLink.style.display = 'inline-block';
-                newLink.style.padding = '5px 10px';
-                newLink.style.textDecoration = 'none';
-                barraContent.appendChild(newLink);
-                console.log(`Enlace ${index + 1} insertado:`, newLink.outerHTML);
-            });
+links.forEach((link, index) => {
+    const newLink = link.cloneNode(true);
+    newLink.style.color = 'white';
+    newLink.style.display = 'block';
+    newLink.style.padding = '5px 10px';
+    newLink.style.textDecoration = 'none';
+    
+    // Asegúrate de que el target sea 'left', que es el name del iframe
+    newLink.target = 'left';
+
+    // Opcionalmente, puedes añadir un manejador de clics si necesitas hacer algo adicional
+    newLink.onclick = function(e) {
+        // Si necesitas hacer algo adicional al hacer clic, hazlo aquí
+        console.log('Clic en enlace:', this.href);
+    };
+
+    insertionPoint.appendChild(newLink);
+    console.log(`Enlace ${index + 1} insertado:`, newLink.outerHTML);
+});
+
+
             
             // Asegurarse de que el contenedor sea visible
             barraContent.style.backgroundColor = '#094988';
@@ -251,6 +264,7 @@ function injectDiv() {
     console.log('No se inyectó el div porque no estamos en la página correcta');
   }
 }
+
 
 function handleLinkClick(event) {
     event.preventDefault();
