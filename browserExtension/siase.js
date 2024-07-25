@@ -95,7 +95,6 @@ function injectDiv() {
 
     container.appendChild(leftDiv);
     container.appendChild(mainContentDiv);
-    mainContentDiv.appendChild(newDiv);
 
     const contentDiv = createContentDiv();
     mainContentDiv.appendChild(contentDiv);
@@ -138,36 +137,48 @@ function createMainContentDiv() {
 }
 
 function createBanner() {
-  const newDiv = document.createElement('div');
-  newDiv.id = 'injectedDiv';
-  newDiv.style.display = 'none';
-  newDiv.style.width = '100%';
-  newDiv.style.height = '15vh';
-  newDiv.style.minHeight = '100px';
-  newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-  newDiv.style.zIndex = '9999';
-  newDiv.style.position = 'sticky';
-  newDiv.style.top = '0';
-  newDiv.innerHTML = `
-      <div class="row siase-navbar">
-          <div class="col-2">
-              <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' alt="Logo de la Universidad Autónoma de Nuevo León"/>
-          </div>
-          <div class="col-10">
-              <div id="siaseData-content">
-                  <div class='d-flex justify-content-center'>
-                      <div id="td18-content">
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <div class="row">
-          <div id='barraContent'>
-          </div>
-      </div>
-  `;
-  return newDiv;
+    const newDiv = document.createElement('div');
+    newDiv.id = 'injectedDiv';
+    newDiv.style.width = '100%';
+    newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+    newDiv.style.zIndex = '9999';
+    // newDiv.style.position = 'sticky';
+    newDiv.style.top = '0';
+    newDiv.innerHTML = `
+        <div class="row siase-navbar">
+            <div class="col-12">
+                <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' style="max-width: 100%;" alt="Logo de la Universidad Autónoma de Nuevo León"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div id="siaseData-content">
+                    <div class='d-flex justify-content-center'>
+                        <div id="td18-content">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id='barraContent'>
+            </div>
+        </div>
+    `;
+    return newDiv;
+}
+
+function insertBannerInLeftDiv() {
+    const leftDiv = document.getElementById('leftDiv');
+    if (leftDiv) {
+        const bannerContainer = leftDiv.querySelector('#bannerContainer');
+        if (bannerContainer) {
+            const banner = createBanner();
+            banner.style.display = 'block'; // Asegúrate de que el banner sea visible
+            banner.style.width = '100%'; // Ajusta el ancho al 100% del contenedor
+            bannerContainer.appendChild(banner);
+        }
+    }
 }
 
 function createContentDiv() {
@@ -196,6 +207,7 @@ function insertSiaseData() {
         const siaseContent = document.getElementById('siaseData-content');
         if (siaseContent) {
             const siaseDiv = siaseContent.querySelector('.d-flex.justify-content-center');
+            
             if (siaseDiv) {
                 siaseDiv.appendChild(extractedSiaseData);
                 console.log('SIASE data insertada correctamente');
@@ -218,8 +230,9 @@ function insertLeftBar() {
 
 function insertTd18() {
     if (extractedTd18) {
-        const td18Content = document.getElementById('td18-content');
+        const td18Content = document.getElementById('siaseData-content');
         if (td18Content) {
+            
             td18Content.appendChild(extractedTd18);
             console.log('Elemento td[width="18%"] insertado correctamente');
         }
@@ -261,24 +274,35 @@ function createStyledLink(link) {
     return newLink;
 }
 
+
 function createLeftDiv() {
     const leftDiv = document.createElement('div');
-    leftDiv.style.width = '20%';
+    leftDiv.style.width = '30%';
     leftDiv.style.height = '100%';
     leftDiv.style.overflowY = 'auto';
     leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
     leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
     leftDiv.style.zIndex = '9998';
-    leftDiv.innerHTML = `
+
+    // Crear e insertar el banner al principio del leftDiv
+    const banner = createBanner();
+    leftDiv.appendChild(banner);
+
+    // Agregar el resto del contenido
+    leftDiv.innerHTML += `
         <div id="leftBar-content" style="padding: 20px;">
             <div class="here"></div>
         </div>
-        <iframe id="leftFrame" name="left"
-                style="width: 100%;
-                height: calc(100% - 20px);
-                border: none;">
-                </iframe>
+
+        <iframe 
+        id="leftFrame"
+        name="left"
+        style="width: 100%;
+        height: calc(100% - 20px);
+        border: none;">
+        </iframe>
     `;
+
   
      // Modificar el contenido del iframe una vez que se cargue
      const iframe = leftDiv.querySelector('#leftFrame');
