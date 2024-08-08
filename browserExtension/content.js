@@ -35,7 +35,6 @@ function updateDOM() {
     const newContent = createContent();
     document.body.insertBefore(newContent, document.body.firstChild.nextSibling);
     addEventListeners();
-
     moveTable();
     moveNexusForm();
     moveCodiceForm();
@@ -79,7 +78,10 @@ function createNavbar() {
                 <div class='col d-flex justify-content-start uanl-logo-container'>
                     <img src="${chrome.runtime.getURL('img/uanlLogo.png')}" class='uanlLogo img-fluid' alt="Logo de la Universidad Autónoma de Nuevo León"/>
                     <div class="linea-vertical mx-3"></div>
-                    <h1 class="name mt-2"> UNIVERSIDAD AUTÓNOMA DE NUEVO LEÓN </h1>
+                    <h1 class="name mt-2">
+                         <span class="university-name"> UNIVERSIDAD AUTÓNOMA </span>
+                         <span class="university-name"> DE NUEVO LEÓN </span>
+                    </h1>
                 </div>
                 <div class='col d-flex justify-content-center'>
                     <img src="${chrome.runtime.getURL('img/aniversary.png')}" class="logoExcelencia img-fluid" alt="Logo from aniversary"/>

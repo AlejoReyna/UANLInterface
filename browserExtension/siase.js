@@ -1,30 +1,23 @@
-// Constantes y variables globales
+// Constants and global variables
+const MAIN_PAGE_URL = "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm";
 let extractedSiaseData = null;
-let extractedTd18 = null;
-let extractedbarraHeader = null;
-let extractedLeftBar = null;
+let extractedUserData = null;
+let extractedHeaderBar = null;
+// let extractedLeftBar = null;
 
-// Funciones de extracción
+// Data extraction functions
 function extractLeftBar() {
-    console.log('Iniciando extractLeftBar()');
+    console.log('Starting extractLeftBar()');
     const leftFrame = document.querySelector('frame[name="left"]');
-    if (!leftFrame) {
-        console.log('No se encontró el frame izquierdo');
+    if (!leftFrame || !leftFrame.contentDocument) {
+        console.log('Left frame not found or content inaccessible');
         return;
     }
 
-    if (!leftFrame.contentDocument) {
-        console.log('No se puede acceder al contenido del frame izquierdo');
-        return;
-    }
-
-    console.log('Frame izquierdo encontrado');
-    console.log('Documento del frame accesible');
-    
     const leftBar = leftFrame.contentDocument.querySelector('ul.menu.collapsible');
     if (leftBar) {
         extractedLeftBar = leftBar.cloneNode(true);
-        console.log('Menú colapsable extraído correctamente');
+        console.log('Collapsible menu extracted successfully');
         addEventListenersToLinks(extractedLeftBar);
     } else {
         extractAlternativeContent(leftFrame);
@@ -32,18 +25,18 @@ function extractLeftBar() {
 }
 
 function extractAlternativeContent(leftFrame) {
-    console.log('No se encontró ul.menu.collapsible. Buscando alternativas...');
+    console.log('ul.menu.collapsible not found. Searching for alternatives...');
     const anyUl = leftFrame.contentDocument.querySelector('ul');
     if (anyUl) {
         extractedLeftBar = anyUl.cloneNode(true);
-        console.log('Se extrajo un ul alternativo');
+        console.log('Alternative ul extracted');
     } else {
         const bodyContent = leftFrame.contentDocument.body;
         if (bodyContent) {
             extractedLeftBar = bodyContent.cloneNode(true);
-            console.log('Contenido del body extraído como alternativa');
+            console.log('Body content extracted as alternative');
         } else {
-            console.log('No se pudo extraer ni siquiera el body');
+            console.log('Failed to extract even the body content');
         }
     }
 }
@@ -51,47 +44,170 @@ function extractAlternativeContent(leftFrame) {
 function extractSiaseData() {
     const topFrame = document.querySelector('frame[name="top"]');
     if (!topFrame || !topFrame.contentDocument) {
-        console.log('No se encontró el frame top o no se puede acceder a su contenido');
+        console.log('Top frame not found or content inaccessible');
         return;
     }
 
     const siaseData = topFrame.contentDocument.querySelector('td[width="5%"][rowspan="2"][align="right"]');
-    const td18 = topFrame.contentDocument.querySelector('td[width="18%"]');
-    const elementsBar = topFrame.contentDocument.querySelector('td[bgcolor="#094988"][colspan="3"]');
-    
-    if (elementsBar) {
-        extractedbarraHeader = elementsBar.cloneNode(true);
-        console.log('Elemento barraHeader extraído correctamente');
-        console.log('Número de enlaces en barraHeader:', extractedbarraHeader.querySelectorAll('a').length);
-        console.log('HTML de barraHeader:', extractedbarraHeader.innerHTML);
+    const userData = topFrame.contentDocument.querySelector('td[width="18%"]');
+    const headerBar = topFrame.contentDocument.querySelector('td[bgcolor="#094988"][colspan="3"]');
+
+    if (headerBar) {
+        extractedHeaderBar = headerBar.cloneNode(true);
+        console.log('Header bar extracted successfully');
+        console.log('Number of links in header bar:', extractedHeaderBar.querySelectorAll('a').length);
+        console.log('Header bar HTML:', extractedHeaderBar.innerHTML);
     }
-    
+
     if (siaseData) {
         extractedSiaseData = siaseData.cloneNode(true);
-        console.log('SIASE data extraída correctamente');
+        console.log('SIASE data extracted successfully');
     } else {
-        console.log('No se encontró el elemento SIASE data en el frame top');
+        console.log('SIASE data element not found in top frame');
     }
-    
-    if (td18) {
-        extractedTd18 = td18.cloneNode(true);
-        console.log('Elemento td[width="18%"] extraído correctamente');
+
+    if (userData) {
+        extractedUserData = userData.cloneNode(true);
+        console.log('User data element extracted successfully');
+
+        const userDataContent = userData.innerHTML;
+        const matriculaMatch = userDataContent.match(/Matrícula<\/span>:\s*(\d+)/);
+        const nombreMatch = userDataContent.match(/Nombre<\/strong>:\s*([^<]+)/);
+
+        if (matriculaMatch && matriculaMatch[1]) {
+            const matricula = matriculaMatch[1];
+            console.log('Matrícula extraída:', matricula);
+        }
+
+        if (nombreMatch && nombreMatch[1]) {
+            const nombre = nombreMatch[1].trim();
+            console.log('Nombre extraído:', nombre);
+        }
     } else {
-        console.log('No se encontró el elemento td[width="18%"] en el frame top');
+        console.log('User data element not found in top frame');
     }
 }
 
-// Funciones de inyección y manipulación del DOM
+// DOM creation functions
+function createMainContainer() {
+    const container = document.createElement('div');
+    container.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    z-index: 9997;
+    background-size: cover;
+  `;
+    return container;
+}
+
+function createMainContentDiv() {
+    const mainContentDiv = document.createElement('div');
+    mainContentDiv.id = 'mainContent';
+    mainContentDiv.style.cssText = `
+    width: 80%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  `;
+    mainContentDiv.innerHTML = `
+    <div id="mainBanner" style="flex-shrink: 0;"></div>
+    <div style="flex-grow: 1; overflow-y: auto;">
+      <div id="originalMainContent"> </div>
+      <iframe id="centerFrame" name="center" style="width: 100%; height: 100%; border: none;"></iframe>
+    </div>
+  `;
+    return mainContentDiv;
+}
+
+// Aquí va el contenido
+function createBanner() {
+    const banner = document.createElement('div');
+    banner.style.cssText = `
+    width: 100%;
+    z-index: 9999;
+    color: #bd995c;
+    top: 0;
+  `;
+    banner.innerHTML = `
+    <div class="row siase-navbar">
+      <div class="col-12"></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div id="siaseData-content">
+          <div class='d-flex justify-content-center'>
+            <div id="userData-content"> Bienvenido:  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div id='barraContent'></div>
+      texto
+    </div>
+  `;
+    return banner;
+}
+
+function createContentDiv() {
+    return document.createElement('div');
+}
+
+function createLeftDiv() {
+    const leftDiv = document.createElement('div');
+    leftDiv.style.cssText = `
+    width: 30%;
+    height: 100%;
+    background-color: #054FA7;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    z-index: 9998;
+  `;
+
+    const banner = createBanner();
+    leftDiv.appendChild(banner);
+
+    leftDiv.innerHTML += `
+    <div id="leftBar-content" style="padding: 20px;">
+      <div class="here"></div>
+    </div>
+    <iframe 
+      id="leftFrame"
+      name="left"
+      style="width: 100%; height: calc(100% - 20px); border: none;">
+    </iframe>
+  `;
+
+    const iframe = leftDiv.querySelector('#leftFrame');
+    iframe.onload = function() {
+        try {
+            const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+            const iframeBody = iframeDocument.body;
+            const iframeAnchors = iframeDocument.getElementsByTagName('a');
+            const iframeLi = iframeDocument.getElementsByTagName('li');
+
+            styleIframeElements(iframeDocument, iframeBody, iframeAnchors, iframeLi);
+        } catch (error) {
+            console.error('Error accessing iframe content:', error);
+        }
+    };
+
+    return leftDiv;
+}
+
+// DOM insertion functions
 function injectDiv() {
-    if (window.location.href !== "https://deimos.dgi.uanl.mx/cgi-bin/wspd_cgi.sh/default.htm") {
-        console.log('No se inyectó el div porque no estamos en la página correcta');
+    if (window.location.href !== MAIN_PAGE_URL) {
+        console.log('Div not injected because we are not on the correct page');
         return;
     }
 
     const container = createMainContainer();
     const leftDiv = createLeftDiv();
     const mainContentDiv = createMainContentDiv();
-    const newDiv = createBanner();
 
     container.appendChild(leftDiv);
     container.appendChild(mainContentDiv);
@@ -100,119 +216,34 @@ function injectDiv() {
     mainContentDiv.appendChild(contentDiv);
 
     appendToBody(container);
-    console.log('Estructura inyectada correctamente');
+    console.log('Structure injected successfully');
 
     insertExtractedData();
 }
 
-function createMainContainer() {
-  const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '0';
-  container.style.left = '0';
-  container.style.width = '100%';
-  container.style.height = '100vh';
-  container.style.display = 'flex';
-  container.style.zIndex = '9997';
-  container.style.background = `url("${chrome.runtime.getURL('img/uanl-bg.png')}") no-repeat center`;
-  container.style.backgroundSize = 'cover';
-  return container;
-}
-
-function createMainContentDiv() {
-  const mainContentDiv = document.createElement('div');
-  mainContentDiv.id = 'mainContent';
-  mainContentDiv.style.width = '80%';
-  mainContentDiv.style.height = '100vh';
-  mainContentDiv.style.display = 'flex';
-  mainContentDiv.style.flexDirection = 'column';
-  mainContentDiv.innerHTML = `
-      <div id="mainBanner" style="flex-shrink: 0;"></div>
-      <div style="flex-grow: 1; overflow-y: auto;">
-          <div id="originalMainContent"></div>
-          <iframe id="centerFrame" name="center" style="width: 100%; height: 100%; border: none;"></iframe>
-      </div>
-  `;
-  return mainContentDiv;
-}
-
-function createBanner() {
-    const newDiv = document.createElement('div');
-    newDiv.id = 'injectedDiv';
-    newDiv.style.width = '100%';
-    newDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
-    newDiv.style.zIndex = '9999';
-    // newDiv.style.position = 'sticky';
-    newDiv.style.top = '0';
-    newDiv.innerHTML = `
-        <div class="row siase-navbar">
-            <div class="col-12">
-                <img src="${chrome.runtime.getURL('img/siase.png')}" class='img-fluid m-2' style="max-width: 100%;" alt="Logo de la Universidad Autónoma de Nuevo León"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div id="siaseData-content">
-                    <div class='d-flex justify-content-center'>
-                        <div id="td18-content">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div id='barraContent'>
-            </div>
-        </div>
-    `;
-    return newDiv;
-}
-
-function insertBannerInLeftDiv() {
-    const leftDiv = document.getElementById('leftDiv');
-    if (leftDiv) {
-        const bannerContainer = leftDiv.querySelector('#bannerContainer');
-        if (bannerContainer) {
-            const banner = createBanner();
-            banner.style.display = 'block'; // Asegúrate de que el banner sea visible
-            banner.style.width = '100%'; // Ajusta el ancho al 100% del contenedor
-            bannerContainer.appendChild(banner);
-        }
-    }
-}
-
-function createContentDiv() {
-    const contentDiv = document.createElement('div');
-  
-    return contentDiv;
-}
-
-function appendToBody(element) {
-    if (document.body) {
-        document.body.appendChild(element);
-    } else {
-        document.documentElement.appendChild(element);
-    }
-}
-
 function insertExtractedData() {
-    insertSiaseData();
+    insertSiaseData(); // <- Esta cosa trae la foto
     insertLeftBar();
-    insertTd18();
-    insertBarraHeader();
+   // insertUserData();
+    insertHeaderBar();
 }
 
 function insertSiaseData() {
-    if (extractedSiaseData) {
-        const siaseContent = document.getElementById('siaseData-content');
-        if (siaseContent) {
-            const siaseDiv = siaseContent.querySelector('.d-flex.justify-content-center');
-            
-            if (siaseDiv) {
-                siaseDiv.appendChild(extractedSiaseData);
-                console.log('SIASE data insertada correctamente');
-            }
+    const siaseContent = document.getElementById('siaseData-content');
+    if (siaseContent) {
+        const imgElement = siaseContent.querySelector('img');
+        if (imgElement) {
+            // Aplicar estilos para hacer la imagen redonda
+            imgElement.style.borderRadius = '50%';
+            imgElement.style.objectFit = 'cover';
+            imgElement.style.width = '100px'; // Ajusta según necesites
+            imgElement.style.height = '100px'; // Ajusta según necesites
+            console.log('Image style updated to circular');
+        } else {
+            console.log('Image element not found');
         }
+    } else {
+        console.log('siaseData-content element not found');
     }
 }
 
@@ -221,187 +252,108 @@ function insertLeftBar() {
         const leftBarContent = document.getElementById('leftBar-content');
         if (leftBarContent) {
             leftBarContent.appendChild(extractedLeftBar);
-            console.log('Elemento leftBar insertado correctamente');
+            console.log('Left bar element inserted successfully');
         }
     } else {
-        console.log('No hay contenido extraído para leftBar');
+        console.log('No extracted content for left bar');
     }
 }
 
-function insertTd18() {
-    if (extractedTd18) {
-        const td18Content = document.getElementById('siaseData-content');
-        if (td18Content) {
-            
-            td18Content.appendChild(extractedTd18);
-            console.log('Elemento td[width="18%"] insertado correctamente');
+
+function insertUserData() {
+    if (extractedUserData) {
+        const userDataContent = document.getElementById('siaseData-content');
+        if (userDataContent) {
+            userDataContent.appendChild(extractedUserData);
+            console.log('User data element inserted successfully');
         }
     }
 }
 
-// Function that sets the vertical menubar in the sidebar
-function insertBarraHeader() {
-    if (extractedbarraHeader) {
+function insertHeaderBar() {
+
+    if (extractedHeaderBar) {
         const barraContent = document.getElementById('barraContent');
         if (barraContent) {
             barraContent.innerHTML = '';
-            const links = extractedbarraHeader.querySelectorAll('a');
+            const links = extractedHeaderBar.querySelectorAll('a');
             links.forEach((link, index) => {
                 const newLink = createStyledLink(link);
                 const insertionPoint = document.querySelector('#leftBar-content .here');
-                insertionPoint.appendChild(newLink);
-                console.log(`Enlace ${index + 1} insertado:`, newLink.outerHTML);
+                if (insertionPoint) {
+                    styleInsertionPointAnchors(insertionPoint);
+                    insertionPoint.appendChild(newLink);
+                    console.log(`Link ${index + 1} inserted:`, newLink.outerHTML);
+                }
             });
-            styleBarraContent(barraContent);
-            console.log('Todos los enlaces insertados y estilizados');
+            console.log('All links inserted and styled');
         } else {
-            console.log('No se encontró el elemento con id "barraContent"');
+            console.log('Element with id "barraContent" not found');
         }
     } else {
-        console.log('No hay contenido extraído para barraHeader');
+        console.log('No extracted content for header bar');
     }
+
 }
 
-// Function that modifies the menu opened while clicking in a sidebar
+// Styling functions
 function createStyledLink(link) {
     const newLink = link.cloneNode(true);
-    newLink.style.color = 'white';
-    newLink.style.display = 'block';
-    newLink.style.padding = '5px 10px';
-    newLink.style.textDecoration = 'none';
+    newLink.style.cssText = `
+    display: block;
+    padding: 10px 10px;
+    text-decoration: none;
+  `;
     newLink.target = 'left';
-    newLink.onclick = handleLinkClick;
+    newLink.onclick = (event) => handleLinkClick(event, newLink);
     return newLink;
 }
 
+function styleIframeElements(iframeDocument, iframeBody, iframeAnchors, iframeLi) {
 
-function createLeftDiv() {
-    const leftDiv = document.createElement('div');
-    leftDiv.style.width = '30%';
-    leftDiv.style.height = '100%';
-    leftDiv.style.overflowY = 'auto';
-    leftDiv.style.backgroundColor = 'rgba(2, 35, 66, 0.8)';
-    leftDiv.style.boxShadow = '2px 0 5px rgba(0,0,0,0.1)';
-    leftDiv.style.zIndex = '9998';
+    if (iframeLi.length > 0) {
+        const style = iframeDocument.createElement('style');
+        style.textContent = 'li { border-bottom: none !important; }';
+        iframeDocument.head.appendChild(style);
+        Array.from(iframeLi).forEach(li => li.style.removeProperty('border-bottom'));
+        console.log('Border bottom removed successfully');
+    } else {
+        console.log('No li elements found in the iframe');
+    }
 
-    // Crear e insertar el banner al principio del leftDiv
-    const banner = createBanner();
-    leftDiv.appendChild(banner);
+    if (iframeAnchors.length > 0) {
+        const style = iframeDocument.createElement('style');
+        style.textContent = 'a { background: none !important; background-color: transparent !important; }';
+        iframeDocument.head.appendChild(style);
+        Array.from(iframeAnchors).forEach(anchor => {
+            anchor.removeAttribute('background');
+            anchor.style.removeProperty('background');
+            anchor.style.removeProperty('background-color');
+            // anchor.style.color = '#bd995c';
+        });
+        console.log('Anchor background removed successfully');
+    } else {
+        console.log('No anchors found in the iframe');
+    }
 
-    // Agregar el resto del contenido
-    leftDiv.innerHTML += `
-        <div id="leftBar-content" style="padding: 20px;">
-            <div class="here"></div>
-        </div>
-
-        <iframe 
-        id="leftFrame"
-        name="left"
-        style="width: 100%;
-        height: calc(100% - 20px);
-        border: none;">
-        </iframe>
-    `;
-
-  
-     // Modificar el contenido del iframe una vez que se cargue
-     const iframe = leftDiv.querySelector('#leftFrame');
-     iframe.onload = function() {
-         try {
-             const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-             const iframeBody = iframeDocument.body;
-             const iframeAnchors = iframeDocument.getElementsByTagName('a');
-             const iframeLi = iframeDocument.getElementsByTagName('li');
-            
-             if (iframeLi.length > 0) {
-                // Crear un estilo para sobrescribir el fondo de los enlaces
-                const style = iframeDocument.createElement('style');
-                style.textContent = `
-                li {
-                    border-bottom: none !important;
-                }
-            `;
-                iframeDocument.head.appendChild(style);
-            
-                // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
-                Array.from(iframeLi).forEach(li => {
-                    li.style.removeProperty('border-bottom')
-                });
-            
-                console.log('Border bottom eliminado correctamente');
-            } else {
-                console.log('No se encontraron elementos li en el iframe');
-            }
-  
-             if (iframeAnchors.length > 0) {
-              // Crear un estilo para sobrescribir el fondo de los enlaces
-              const style = iframeDocument.createElement('style');
-              style.textContent = `
-                  a {
-                      background: none !important;
-                      background-color: transparent !important;
-                  }
-              `;
-              iframeDocument.head.appendChild(style);
-          
-              // Adicionalmente, eliminar cualquier atributo 'background' y estilo inline
-              Array.from(iframeAnchors).forEach(anchor => {
-                  anchor.removeAttribute('background');
-                  anchor.style.removeProperty('background');
-                  anchor.style.removeProperty('background-color');
-              });
-          
-              console.log('Fondo de los enlaces eliminado correctamente');
-          } else {
-              console.log('No se encontraron enlaces en el iframe');
-          }
-          
-             
-             
-             if (iframeBody) {
-                 // Eliminar el atributo bgcolor si existe
-                 iframeBody.removeAttribute('bgcolor');
-                 
-                 // Crear y añadir un estilo para asegurar que el fondo se aplique
-                 const style = iframeDocument.createElement('style');
-                 iframeDocument.head.appendChild(style);
-                 iframeBody.style.padding = '5px 10px';
-                 
-             } 
-          } catch (error) {
-              console.error('Error al acceder al contenido del iframe:', error);
-          }
-     };
-  
-  
-  
-    return leftDiv;
-  }
-  
-
-
-
-
-/** 
- *  Unused function
- 
-    function styleBarraContent(barraContent) {
-    barraContent.style.backgroundColor = 'red';
-    barraContent.style.width = '100%';
-    barraContent.style.minHeight = '40px';
-    barraContent.style.display = 'flex';
-    barraContent.style.alignItems = 'center';
-    barraContent.style.justifyContent = 'space-around';
-    barraContent.style.overflow = 'visible';
+    if (iframeBody) {
+        iframeBody.removeAttribute('bgcolor');
+        const style = iframeDocument.createElement('style');
+        iframeDocument.head.appendChild(style);
+        iframeBody.style.padding = '5px 10px';
+    }
 }
 
-**/
+function styleInsertionPointAnchors(insertionPoint) {
+    const anchors = insertionPoint.querySelectorAll('a');
+    Array.from(anchors).forEach(anchor => {
+        anchor.style.setProperty('color', '#bd995c', 'important');
+    });
+}
 
-// Event Handlers
-function handleLinkClick(event) {
-    event.preventDefault();
-    const url = event.target.href;
-    loadContent(url);
+// Event handlers
+function handleLinkClick(event, link) {
+    // Implement link click handling logic
 }
 
 function loadContent(url) {
@@ -414,31 +366,11 @@ function loadContent(url) {
             document.getElementById('mainContent').innerHTML = content;
         })
         .catch(error => {
-            console.error('Error al cargar el contenido:', error);
+            console.error('Error loading content:', error);
         });
 }
 
-// Función de inicialización
-function init() {
-    console.log('Iniciando extracción de contenido...');
-    extractSiaseData();
-    
-    console.log('Removiendo frames...');
-    const lastframeset = document.querySelector('frameset[rows="110,*"]');
-    if (lastframeset) lastframeset.remove();
-    
-    console.log('Inyectando nuevo contenido...');
-    injectDiv();
-}
-
-// Event Listeners
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
-
-// Utilidades
+// Utility functions
 function addEventListenersToLinks(element) {
     const links = element.querySelectorAll('a');
     links.forEach(link => {
@@ -446,7 +378,34 @@ function addEventListenersToLinks(element) {
     });
 }
 
-// Logging
-console.log('Script inyectado correctamente');
-const barraContent = document.getElementById('barraContent');
-console.log('Elemento barraContent:', barraContent);
+function appendToBody(element) {
+    if (document.body) {
+        document.body.appendChild(element);
+    } else {
+        document.documentElement.appendChild(element);
+    }
+}
+
+// Initialization
+function init() {
+    console.log('Starting content extraction...');
+    extractSiaseData();
+    extractLeftBar();
+
+    console.log('Removing frames...');
+    const lastFrameset = document.querySelector('frameset[rows="110,*"]');
+    if (lastFrameset) lastFrameset.remove();
+
+    console.log('Injecting new content...');
+    injectDiv();
+}
+
+// Event listeners
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Execute
+console.log('Script injected successfully');

@@ -38,8 +38,17 @@
 .name {
     font-family: 'Times New Roman', Times, serif;
     font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
+.university-name {
+    display: block;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+}
 /** #barraContent {
     background-color: #bd995c !important;
 } **/
@@ -157,3 +166,11 @@
 
 }
 
+  /** Para mames no jalo.js **/
+.leftBar {
+    width: 30%;
+    height: 100%;
+    background-color: #054FA7;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    z-index: 9998;
+}
